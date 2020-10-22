@@ -1,5 +1,9 @@
 import React, { Component} from 'react';
 import TodoTextInput from "./TodoTextInput";
+import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 
 class TodoItem extends Component {
@@ -39,14 +43,15 @@ class TodoItem extends Component {
         } else {
             element = (
                 <div>
-                    <input
-                        type="checkbox"
+                    <Checkbox
+                        defaultChecked
+                        color="default"
                         checked={this.props.completed}
                         onClick={() => completeTodo(this.props.id)}/>
                     <label
                         style={{textDecoration: this.props.completed ? 'line-through' : 'none'}}
                         onDoubleClick={this.handleEditing}>{this.props.text}</label>
-                    <button onClick={() => deleteTodo(this.props.id)}>x</button>
+                    <IconButton aria-label="delete" onClick={() => deleteTodo(this.props.id)}><DeleteIcon /></IconButton>
                 </div>
             )
         }

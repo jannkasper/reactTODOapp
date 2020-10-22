@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import TextField from '@material-ui/core/TextField';
 
 class TodoTextInput extends Component {
 
@@ -28,7 +29,7 @@ class TodoTextInput extends Component {
 
     render() {
         return (
-            <input
+            <TextField id="standard-basic"
                 type="text"
                 autoFocus="true"
                 placeholder={this.props.placeholder}
