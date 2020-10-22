@@ -1,0 +1,185 @@
+Index: src/components/TodoTextInput.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, {Component} from \"react\";\nimport TextField from '@material-ui/core/TextField';\n\nclass TodoTextInput extends Component {\n\n    state = {\n        text: this.props.text || ''\n    };\n\n    handleChange = e => {\n        this.setState({ text: e.target.value });\n    };\n\n    handleBlur = e => {\n        if (!this.props.newTodo) {\n            this.props.onSave(e.target.value);\n        }\n    };\n\n    handleSubmit = e => {\n        const text = e.target.value.trim();\n        if (e.which === 13 && text.length !== 0) {\n            this.props.onSave(text);\n            if(this.props.newTodo) {\n                this.setState({text: ''})\n            }\n        }\n    };\n\n    render() {\n        return (\n            <TextField id=\"standard-basic\"\n                type=\"text\"\n                autoFocus=\"true\"\n                placeholder={this.props.placeholder}\n                value={this.state.text}\n                onBlur={this.handleBlur}\n                onChange={this.handleChange}\n                onKeyDown={this.handleSubmit}/>\n        )\n    }\n}\n\n\nexport default TodoTextInput\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/components/TodoTextInput.jsx	(revision 6401cd546fc7a6d2db64ebe66b1cde33914eab21)
++++ src/components/TodoTextInput.jsx	(date 1603344009214)
+@@ -30,6 +30,7 @@
+     render() {
+         return (
+             <TextField id="standard-basic"
++                fullWidth
+                 type="text"
+                 autoFocus="true"
+                 placeholder={this.props.placeholder}
+Index: src/components/Main.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, {Component} from 'react';\nimport AddTodo from \"../containers/HeaderContainer\";\nimport TodoItem from \"./TodoItem\";\n\nclass Main extends Component {\n    constructor(props) {\n        super(props);\n    }\n\n    render() {\n        let element;\n\n        if (this.props.todoList.length !== 0) {\n            element = (\n                <ul>\n                    {this.props.todoList.map(todo => { return <TodoItem key={`item-${todo.id}`} {...todo} {...this.props.actions}/>})}\n                </ul>\n            )\n        } else {\n            element = <p>Nothing to do \uD83D\uDC4C</p>\n        }\n\n        return element\n    }\n}\n\nexport default Main;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/components/Main.jsx	(revision 6401cd546fc7a6d2db64ebe66b1cde33914eab21)
++++ src/components/Main.jsx	(date 1603345055190)
+@@ -1,6 +1,8 @@
+ import React, {Component} from 'react';
+ import AddTodo from "../containers/HeaderContainer";
+ import TodoItem from "./TodoItem";
++import Grid from '@material-ui/core/Grid';
++
+ 
+ class Main extends Component {
+     constructor(props) {
+@@ -12,9 +14,12 @@
+ 
+         if (this.props.todoList.length !== 0) {
+             element = (
+-                <ul>
++                <Grid
++                    container
++                    direction="column"
++                    justify="center">
+                     {this.props.todoList.map(todo => { return <TodoItem key={`item-${todo.id}`} {...todo} {...this.props.actions}/>})}
+-                </ul>
++                </Grid>
+             )
+         } else {
+             element = <p>Nothing to do 👌</p>
+Index: src/components/Header.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, {Component} from 'react'\nimport TodoTextInput from \"./TodoTextInput\";\nimport Button from '@material-ui/core/Button';\nimport PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';\nimport Fab from '@material-ui/core/Fab';\nimport ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';\nimport ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';\n\nclass Header extends Component {\n\n    constructor(props) {\n        super(props);\n        this.state = {input: '', completed: false}\n    }\n\n    handleAddTodo = () => {\n        this.props.addTodo(this.state.input);\n        this.setState({input: ''});\n    };\n\n    handleChangeCompleted = () => {\n        const completed = this.state.completed;\n        this.setState({completed: !completed});\n        this.props.completeAll(!completed);\n    };\n\n\n    render() {\n        return (\n            <div>\n                <Fab\n                    variant=\"extended\"\n                    size=\"small\"\n                    color={this.state.completed ? \"primary\" : \"default\"}\n                    onClick={this.handleChangeCompleted}>\n                    {this.state.completed ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}\n                    {this.state.completed ? \"MARKED\" : \"MARK\"}\n                </Fab>\n                <TodoTextInput\n                    newTodo\n                    placeholder=\"What needs to be done?\"\n                    onSave={(text) => this.props.addTodo(text)}/>\n                <Button\n                    variant=\"contained\"\n                    color=\"primary\"\n                    size=\"small\"\n                    endIcon={<PlaylistAddIcon fontSize=\"small\" />}\n                    onClick={this.handleAddTodo}>ADD</Button>\n            </div>\n        )\n    }\n\n}\n\n\nexport default Header\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/components/Header.jsx	(revision 6401cd546fc7a6d2db64ebe66b1cde33914eab21)
++++ src/components/Header.jsx	(date 1603383662368)
+@@ -5,6 +5,10 @@
+ import Fab from '@material-ui/core/Fab';
+ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
++import Grid from '@material-ui/core/Grid';
++import IconButton from '@material-ui/core/IconButton';
++import SendIcon from '@material-ui/icons/Send';
++
+ 
+ class Header extends Component {
+ 
+@@ -27,26 +31,33 @@
+ 
+     render() {
+         return (
+-            <div>
+-                <Fab
+-                    variant="extended"
+-                    size="small"
+-                    color={this.state.completed ? "primary" : "default"}
+-                    onClick={this.handleChangeCompleted}>
+-                    {this.state.completed ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}
+-                    {this.state.completed ? "MARKED" : "MARK"}
+-                </Fab>
+-                <TodoTextInput
+-                    newTodo
+-                    placeholder="What needs to be done?"
+-                    onSave={(text) => this.props.addTodo(text)}/>
+-                <Button
+-                    variant="contained"
+-                    color="primary"
+-                    size="small"
+-                    endIcon={<PlaylistAddIcon fontSize="small" />}
+-                    onClick={this.handleAddTodo}>ADD</Button>
+-            </div>
++            <Grid container spacing={3} justify="center">
++                <Grid item xs={1.8}>
++                    <Fab
++                        variant="extended"
++                        size="small"
++                        color={this.state.completed ? "primary" : "default"}
++                        onClick={this.handleChangeCompleted}>
++                        {this.state.completed ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}
++                        {this.state.completed ? "MARKED" : "MARK"}
++                    </Fab>
++                </Grid>
++                <Grid item xs={3}>
++                    <TodoTextInput
++                        newTodo
++                        placeholder="What needs to be done?"
++                        onSave={(text) => this.props.addTodo(text)}/>
++                </Grid>
++                <Grid item xs={1}>
++                    <Button
++                        variant="contained"
++                        color="primary"
++                        endIcon={<SendIcon fontSize="large" />}
++                        onClick={this.handleAddTodo}>
++                        Send
++                    </Button>
++                </Grid>
++            </Grid>
+         )
+     }
+ 
+Index: src/components/TodoItem.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { Component} from 'react';\nimport TodoTextInput from \"./TodoTextInput\";\nimport Checkbox from '@material-ui/core/Checkbox';\nimport IconButton from '@material-ui/core/IconButton';\nimport DeleteIcon from '@material-ui/icons/Delete';\n\n\n\nclass TodoItem extends Component {\n\n    state = {\n        editing: false\n    };\n\n    handleEditing = () => {\n        this.setState({editing: true})\n    };\n\n    handleSave = (id, text) => {\n        const {editTodo, deleteTodo} = this.props;\n\n        if (text.length === 0) {\n            deleteTodo(id);\n        } else {\n            editTodo(id, text);\n        }\n        this.setState({editing: false})\n\n    };\n\n\n    render() {\n        const {completeTodo, deleteTodo} = this.props;\n\n        let element;\n        if (this.state.editing) {\n            element = (\n                <TodoTextInput\n                    text={this.props.text}\n                    editing={this.state.editing}\n                    onSave={(text) => this.handleSave(this.props.id, text)}/>\n            )\n        } else {\n            element = (\n                <div>\n                    <Checkbox\n                        defaultChecked\n                        color=\"default\"\n                        checked={this.props.completed}\n                        onClick={() => completeTodo(this.props.id)}/>\n                    <label\n                        style={{textDecoration: this.props.completed ? 'line-through' : 'none'}}\n                        onDoubleClick={this.handleEditing}>{this.props.text}</label>\n                    <IconButton aria-label=\"delete\" onClick={() => deleteTodo(this.props.id)}><DeleteIcon /></IconButton>\n                </div>\n            )\n        }\n        return <li>\n            {element}\n        </li>\n    }\n}\n\nexport default TodoItem\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/components/TodoItem.jsx	(revision 6401cd546fc7a6d2db64ebe66b1cde33914eab21)
++++ src/components/TodoItem.jsx	(date 1603345288699)
+@@ -3,6 +3,7 @@
+ import Checkbox from '@material-ui/core/Checkbox';
+ import IconButton from '@material-ui/core/IconButton';
+ import DeleteIcon from '@material-ui/icons/Delete';
++import Grid from '@material-ui/core/Grid';
+ 
+ 
+ 
+@@ -42,22 +43,29 @@
+             )
+         } else {
+             element = (
+-                <div>
+-                    <Checkbox
+-                        defaultChecked
+-                        color="default"
+-                        checked={this.props.completed}
+-                        onClick={() => completeTodo(this.props.id)}/>
+-                    <label
+-                        style={{textDecoration: this.props.completed ? 'line-through' : 'none'}}
+-                        onDoubleClick={this.handleEditing}>{this.props.text}</label>
+-                    <IconButton aria-label="delete" onClick={() => deleteTodo(this.props.id)}><DeleteIcon /></IconButton>
+-                </div>
++                <Grid
++                    container
++                    direction="row"
++                    justify="center"
++                    alignItems="center">
++                        <Checkbox
++                            defaultChecked
++                            color="default"
++                            checked={this.props.completed}
++                            onClick={() => completeTodo(this.props.id)}/>
++                        <Grid
++                            item xs={3}>
++                            <label
++                                style={{textDecoration: this.props.completed ? 'line-through' : 'none', textAlign: 'left'}}
++                                onDoubleClick={this.handleEditing}>{this.props.text}</label>
++                        </Grid>
++                        <IconButton aria-label="delete" onClick={() => deleteTodo(this.props.id)}><DeleteIcon /></IconButton>
++                </Grid>
+             )
+         }
+-        return <li>
+-            {element}
+-        </li>
++
++        return <div key={this.props.key}>{element} </div>
++
+     }
+ }
+ 

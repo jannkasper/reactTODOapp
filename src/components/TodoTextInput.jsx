@@ -4,11 +4,18 @@ import TextField from '@material-ui/core/TextField';
 class TodoTextInput extends Component {
 
     state = {
-        text: this.props.text || ''
+        text: this.props.input || ''
     };
+
+    getAlert() {
+        this.setState({text: ''})
+    }
 
     handleChange = e => {
         this.setState({ text: e.target.value });
+        if (this.props.newTodo) {
+            this.props.update(e.target.value);
+        }
     };
 
     handleBlur = e => {
@@ -28,8 +35,10 @@ class TodoTextInput extends Component {
     };
 
     render() {
+
         return (
             <TextField id="standard-basic"
+                fullWidth
                 type="text"
                 autoFocus="true"
                 placeholder={this.props.placeholder}
