@@ -1,9 +1,9 @@
 import {connect} from 'react-redux'
 import Header from '../components/Header'
-import {addTodo} from "../actions/todoActions";
+import {addTodo, completeAll} from "../actions/todoActions";
 
-// const mapStateToProps = ({}) => ({});
-//
-// const mapDispatchToProps = () => dispatch => ({});
+const mapStateToProps = ({}) => ({});
 
-export default connect(null, {addTodo})(Header)
+const mapDispatchToProps = () => dispatch => ({});
+
+export default connect(null, {addTodo, completeAll})(Header)
